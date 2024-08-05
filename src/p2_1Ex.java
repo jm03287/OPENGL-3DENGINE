@@ -10,17 +10,19 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Vector;
 import com.jogamp.opengl.util.*;
-//import TransformationMatrix4x4;
+// TODO import TransformationMatrix4x4;
 
 
 public class p2_1Ex extends JFrame implements GLEventListener{
 	private static final long serialVersionUID = 1L;
 	private GLCanvas myCanvas;
 	private int rendering_program;
-	private int vao[] = new int[1]; //vertex array object
+	private int vao[] = new int[1]; //vertex array object; corresponds to model attribution for implementation as a uniform.
 	private int vbo[] = new int[2]; //vertex buffer object
-	//private float x = 0.0f; //x coord of triangle
-	//private float inc = 0.01f; //delta offset of triangle
+	//the model-view matrix can be expressed as a universal uniform shader variable amongst model-world-view
+	//whereas such the projection matrix expresses a uniform shader algorithm of view-to-camera
+	private float cameraX, cameraY, cameraZ;
+	private float cubeLocX, cubeLocY, cubeLocZ;
 	
 	public p2_1Ex() {
 		setTitle("p2_1Ex");
@@ -30,8 +32,8 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		myCanvas.addGLEventListener(this);
 		this.add(myCanvas);
 		setVisible(true);
-		FPSAnimator animtr = new FPSAnimator(myCanvas, 50); //The second arg is the FPS HZ.
-		animtr.start();
+		//FPSAnimator animtr = new FPSAnimator(myCanvas, 50); //The second arg is the FPS HZ.
+		//animtr.start();
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		float bkg[] = {0.0f, 0.0f, 0.0f, 1.0f}; //clear background after every frame
 		FloatBuffer bkgBuffer = Buffers.newDirectFloatBuffer(bkg);
 		gl.glClearBufferfv(GL_COLOR, 0, bkgBuffer);
-		x += inc;
+		/*x += inc;
 		if(x > 1.0f) {
 			inc = -0.01f;
 		}
@@ -52,7 +54,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		}
 		int offset_loc = gl.glGetUniformLocation(rendering_program, "offset");
 		gl.glProgramUniform1f(rendering_program, offset_loc, x);
-		gl.glDrawArrays(GL_TRIANGLES, 0, 3);
+		gl.glDrawArrays(GL_TRIANGLES, 0, 3);*/
 	}
 	
 	public static void main(String[] args) {
@@ -71,8 +73,10 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	public void init(GLAutoDrawable drawable) {
 		GL4 gl = (GL4) GLContext.getCurrentGL();
 		rendering_program = createShaderProgram();
-		gl.glGenVertexArrays(vao.length, vao, 0);
-		gl.glBindVertexArray(vao[0]);
+		//gl.glGenVertexArrays(vao.length, vao, 0);
+		//gl.glBindVertexArray(vao[0]);
+		setupVertices();
+		cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
 		
 	}
 
@@ -123,6 +127,10 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		
 		return vfprogram;
 		//inputSeedMatrix4x4.getENTRY0_0()*transformationMatrix4x4.ENTRY0_0
+	}
+	
+	private void setupVertices() {
+		
 	}
 	
 	private String[] readShaderSource(String filename) {

@@ -183,6 +183,13 @@ public class TransformationMatrix4x4 {
 			{0, 0, -1, 0}});
 	}
 	
+	public static float[] mat4GLSL(TransformationMatrix4x4 transformationMatrix4x4) {
+		return new float[] {(float) transformationMatrix4x4.getENTRY0_0(), (float) transformationMatrix4x4.getENTRY1_0(), (float) transformationMatrix4x4.getENTRY2_0(), (float) transformationMatrix4x4.getENTRY3_0(),
+				(float) transformationMatrix4x4.getENTRY0_1(), (float) transformationMatrix4x4.getENTRY1_1(), (float) transformationMatrix4x4.getENTRY2_1(), (float) transformationMatrix4x4.getENTRY3_1(),
+				(float) transformationMatrix4x4.getENTRY0_2(), (float) transformationMatrix4x4.getENTRY1_2(), (float) transformationMatrix4x4.getENTRY2_2(), (float) transformationMatrix4x4.getENTRY3_2(),
+				(float) transformationMatrix4x4.getENTRY0_3(), (float) transformationMatrix4x4.getENTRY1_3(), (float) transformationMatrix4x4.getENTRY2_3(), (float) transformationMatrix4x4.getENTRY3_3()};
+	}
+	
 	
 	//TRANSPOSED INVERSE/ INVERTED TRANSPOSE
 

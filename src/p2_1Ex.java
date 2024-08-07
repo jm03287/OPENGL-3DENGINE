@@ -23,6 +23,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	//whereas such the projection matrix expresses a uniform shader algorithm of view-to-camera
 	private float cameraX, cameraY, cameraZ;
 	private float cubeLocX, cubeLocY, cubeLocZ;
+	private TransformationMatrix4x4 pMat;
 	
 	public p2_1Ex() {
 		setTitle("p2_1Ex");
@@ -39,8 +40,36 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL4 gl = (GL4) GLContext.getCurrentGL();
+		gl.glClear(GL_DEPTH_BUFFER_BIT);
 		gl.glUseProgram(rendering_program);
-		gl.glPointSize(40.0f);
+		
+		TransformationMatrix4x4 vMat = new TransformationMatrix4x4();
+		vMat.translateToWorldViewCoords(cameraX, cameraY, cameraZ);
+		
+		TransformationMatrix4x4 mMat = new TransformationMatrix4x4();
+		mMat.translateCoords(cubeLocX, cubeLocY, cubeLocZ);
+		
+		TransformationMatrix4x4 mvMat = vMat.transformMatrix4x4(mMat);
+		
+		//embed java float array matrices as the two uniform variables
+		int mv_loc = gl.glGetUniformLocation(rendering_program, "mv_matrix"); //obtain pointer to modelview matrix uniform shader's reference
+		int proj_loc = gl.glGetUniformLocation(rendering_program, "proj_matrix"); //obtain pointer to projection matrix uniform shader's reference
+		
+		//transfer uniform variables to corresponding shader reference to be used with vertex attributes from each vertex buffer, convert to mat4 format
+		gl.glUniformMatrix4fv(proj_loc, 1, false, TransformationMatrix4x4.mat4GLSL(pMat), 0);
+		gl.glUniformMatrix4fv(mv_loc, 1, false, TransformationMatrix4x4.mat4GLSL(mvMat), 0);
+		
+		//activate and link vertex buffer object with shader's vertex attributes using VBO reference
+		gl.glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+		gl.glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		gl.glEnableVertexAttribArray(0);
+		
+		//OpenGL preset adjustments
+		gl.glEnable(GL_DEPTH_TEST);
+		gl.glDepthFunc(GL_LEQUAL);
+		gl.glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		/*gl.glPointSize(40.0f);
 		gl.glDrawArrays(GL_TRIANGLES, 0, 3);
 		float bkg[] = {0.0f, 0.0f, 0.0f, 1.0f}; //clear background after every frame
 		FloatBuffer bkgBuffer = Buffers.newDirectFloatBuffer(bkg);
@@ -77,6 +106,12 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		//gl.glBindVertexArray(vao[0]);
 		setupVertices();
 		cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
+		cubeLocX = 0.0f; cubeLocY = -2.0f; cubeLocZ = 0.0f;
+		
+		double aspect = (double) myCanvas.getWidth() / (double) myCanvas.getHeight();
+		//float aspect = (float) myCanvas.getWidth() / (float) myCanvas.getHeight();
+		pMat = TransformationMatrix4x4.projectionMatrix4x4(60.0, aspect, 0.1, 1000.0); //set up view projection matrix
+		//TransformationMatrix4x4.mat4GLSL();
 		
 	}
 
@@ -130,7 +165,22 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	}
 	
 	private void setupVertices() {
+		GL4 gl = (GL4) GLContext.getCurrentGL();
 		
+		float[] vertex_positions = {-1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
+				1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
+				1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f,  1.0f, 1.0f, 1.0f, -1.0f,
+				-1.0f, 1.0f, -1.0f, 1.0f, 1.0f,  1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f,
+				-1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f,
+				-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+				1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 1.0f, -1.0f};
+		
+		gl.glGenVertexArrays(vao.length, vao, 0);
+		gl.glBindVertexArray(vao[0]);
+		gl.glGenBuffers(vbo.length, vbo, 0);
+		gl.glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+		FloatBuffer vertBuf = Buffers.newDirectFloatBuffer(vertex_positions);
+		gl.glBufferData(GL_ARRAY_BUFFER, vertBuf.limit()*4, vertBuf, GL_STATIC_DRAW);
 	}
 	
 	private String[] readShaderSource(String filename) {

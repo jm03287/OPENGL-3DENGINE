@@ -174,7 +174,7 @@ public class TransformationMatrix4x4 {
 	}
 	
 
-	public static TransformationMatrix4x4 projectionMatrix4x4(int topToBottomFOV, double aspectRatio, double ZNEAR, double ZFAR) {
+	public static TransformationMatrix4x4 projectionMatrix4x4(double topToBottomFOV, double aspectRatio, double ZNEAR, double ZFAR) {
 		double invFrustum = 1/(Math.tan(topToBottomFOV*0.5*Math.PI/180));
 		double depthCoefficient = 1/(ZNEAR-ZFAR);
 		return new TransformationMatrix4x4(new double[][]{{invFrustum/aspectRatio, 0, 0, 0},
@@ -190,6 +190,24 @@ public class TransformationMatrix4x4 {
 				(float) transformationMatrix4x4.getENTRY0_3(), (float) transformationMatrix4x4.getENTRY1_3(), (float) transformationMatrix4x4.getENTRY2_3(), (float) transformationMatrix4x4.getENTRY3_3()};
 	}
 	
+	public TransformationMatrix4x4() { //NULL constructor
+		this.ENTRY0_0 = 1.0;
+		this.ENTRY0_1 = 0.0;
+		this.ENTRY0_2 = 0.0;
+		this.ENTRY0_3 = 0.0;
+		this.ENTRY1_0 = 0.0;
+		this.ENTRY1_1 = 1.0;
+		this.ENTRY1_2 = 0.0;
+		this.ENTRY1_3 = 0.0;
+		this.ENTRY2_0 = 0.0;
+		this.ENTRY2_1 = 0.0;
+		this.ENTRY2_2 = 1.0;
+		this.ENTRY2_3 = 0.0;
+		this.ENTRY3_0 = 0.0;
+		this.ENTRY3_1 = 0.0;
+		this.ENTRY3_2 = 0.0;
+		this.ENTRY3_3 = 1.0;
+	}
 	
 	//TRANSPOSED INVERSE/ INVERTED TRANSPOSE
 

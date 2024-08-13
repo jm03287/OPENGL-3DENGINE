@@ -8,5 +8,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="var" path="Gluegen"/>
 	<classpathentry kind="var" path="JOGL-all" sourcepath="/JOGL-all"/>
+	<classpathentry kind="var" path="GraphicsLib3D"/>
+	<classpathentry kind="lib" path="C:/graphicslib3D/graphicslib3D.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

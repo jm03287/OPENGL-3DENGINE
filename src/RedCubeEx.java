@@ -10,11 +10,15 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Vector;
 import com.jogamp.opengl.util.*;
+import graphicslib3D.*;
+import graphicslib3D.GLSLUtils.*;
+import java.lang.Object;
+//import org.joml.jmh.Matrix4f;
 // TODO import TransformationMatrix4x4;
 
 
 
-public class p2_1Ex extends JFrame implements GLEventListener{
+public class RedCubeEx extends JFrame implements GLEventListener{
 	private static final long serialVersionUID = 1L;
 	private GLCanvas myCanvas;
 	private int rendering_program;
@@ -26,8 +30,8 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	private float cubeLocX, cubeLocY, cubeLocZ;
 	private TransformationMatrix4x4f pMat;
 	
-	public p2_1Ex() {
-		setTitle("p2_1Ex");
+	public RedCubeEx() {
+		setTitle("RedCubeEx");
 		setSize(600, 400);
 		//setLocation(200, 200);
 		myCanvas = new GLCanvas();
@@ -41,9 +45,6 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL4 gl = (GL4) GLContext.getCurrentGL();
-		float bkg[] = {0.0f, 0.0f, 0.0f, 1.0f}; //clear background after every frame
-		FloatBuffer bkgBuffer = Buffers.newDirectFloatBuffer(bkg);
-		gl.glClearBufferfv(GL_COLOR, 0, bkgBuffer);
 		gl.glClear(GL_DEPTH_BUFFER_BIT);
 		gl.glUseProgram(rendering_program);
 		
@@ -58,10 +59,16 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		//embed java float array matrices as the two uniform variables
 		int mv_loc = gl.glGetUniformLocation(rendering_program, "mv_matrix"); //obtain pointer to modelview matrix uniform shader's reference
 		int proj_loc = gl.glGetUniformLocation(rendering_program, "proj_matrix"); //obtain pointer to projection matrix uniform shader's reference
-		
+		//TransformationMatrix4x4f.mat4GLSL(pMat)
+		//TransformationMatrix4x4f.mat4GLSL(mvMat)
+		float[] mat4_like_PMat = TransformationMatrix4x4f.mat4GLSL(TransformationMatrix4x4f.transposeMatrix4x4(pMat));
+		/*Matrix4f JOML_PMat = new Matrix4f(mat4_like_PMat[0], mat4_like_PMat[1], mat4_like_PMat[2], mat4_like_PMat[3],
+				mat4_like_PMat[4], mat4_like_PMat[5], mat4_like_PMat[6], mat4_like_PMat[7],
+				mat4_like_PMat[8], mat4_like_PMat[9], mat4_like_PMat[10], mat4_like_PMat[11],
+				mat4_like_PMat[12], mat4_like_PMat[13], mat4_like_PMat[14], mat4_like_PMat[15]);*/
 		//transfer uniform variables to corresponding shader reference to be used with vertex attributes from each vertex buffer, convert to mat4 format
-		gl.glUniformMatrix4fv(proj_loc, 1, false, TransformationMatrix4x4f.mat4GLSL(pMat), 0);
 		gl.glUniformMatrix4fv(mv_loc, 1, false, TransformationMatrix4x4f.mat4GLSL(mvMat), 0);
+		gl.glUniformMatrix4fv(proj_loc, 1, false, TransformationMatrix4x4f.mat4GLSL(pMat), 0);
 		
 		//activate and link vertex buffer object with shader's vertex attributes using VBO reference
 		gl.glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -69,13 +76,15 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		gl.glEnableVertexAttribArray(0);
 		
 		//OpenGL preset adjustments
-		gl.glPointSize(1.0f);
 		gl.glEnable(GL_DEPTH_TEST);
 		gl.glDepthFunc(GL_LEQUAL);
 		gl.glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		//gl.glPointSize(40.0f);
-		//gl.glDrawArrays(GL_TRIANGLES, 0, 3);
+		/*gl.glPointSize(40.0f);
+		gl.glDrawArrays(GL_TRIANGLES, 0, 3);
+		float bkg[] = {0.0f, 0.0f, 0.0f, 1.0f}; //clear background after every frame
+		FloatBuffer bkgBuffer = Buffers.newDirectFloatBuffer(bkg);
+		gl.glClearBufferfv(GL_COLOR, 0, bkgBuffer);
 		/*x += inc;
 		if(x > 1.0f) {
 			inc = -0.01f;
@@ -89,7 +98,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	}
 	
 	public static void main(String[] args) {
-		new p2_1Ex();
+		new RedCubeEx();
 	}
 
 	
@@ -109,7 +118,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		setupVertices();
 		cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
 		cubeLocX = 0.0f; cubeLocY = -2.0f; cubeLocZ = 0.0f;
-		gl.glPointSize(1.0f);
+		
 		float aspect = myCanvas.getWidth() / myCanvas.getHeight();
 		//float aspect = (float) myCanvas.getWidth() / (float) myCanvas.getHeight();
 		pMat = TransformationMatrix4x4f.projectionMatrix4x4(60.0f, aspect, 0.1f, 1000.0f); //set up view projection matrix
@@ -169,22 +178,14 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 	private void setupVertices() {
 		GL4 gl = (GL4) GLContext.getCurrentGL();
 		
-		/*float[] vertex_positions =
+		float[] vertex_positions =
 			{-1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
 				1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
 				1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f,  1.0f, 1.0f, 1.0f, -1.0f,
 				-1.0f, 1.0f, -1.0f, 1.0f, 1.0f,  1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f,
 				-1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f,
 				-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-				1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 1.0f, -1.0f};*/
-		float[ ] vertex_positions =
-		      {  -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
-		          1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-		          1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		         -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-		         -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,
-		         -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f
-		      };
+				1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 1.0f, -1.0f};
 
 		
 		gl.glGenVertexArrays(vao.length, vao, 0);

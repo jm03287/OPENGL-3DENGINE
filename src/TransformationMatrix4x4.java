@@ -63,7 +63,6 @@ public class TransformationMatrix4x4 {
 		inputSeedHVector3D.getXCOORD()*transformationMatrix4x4.getENTRY3_0() + inputSeedHVector3D.getYCOORD()*transformationMatrix4x4.getENTRY3_1() + inputSeedHVector3D.getZCOORD()*transformationMatrix4x4.getENTRY3_2() + hVector3D.HWCOORD*transformationMatrix4x4.getENTRY3_3()};
 		return new hVector3D(hVector3DAtt);
 	}*/
-	
 	public static TransformationMatrix4x4 transposeMatrix4x4(TransformationMatrix4x4 transformationMatrix4x4) {
 		double[][] transposeMatrix4DArr = {{transformationMatrix4x4.getENTRY0_0(), transformationMatrix4x4.getENTRY1_0(), transformationMatrix4x4.getENTRY2_0(), transformationMatrix4x4.getENTRY3_0()},
 		{transformationMatrix4x4.getENTRY0_1(), transformationMatrix4x4.getENTRY1_1(), transformationMatrix4x4.getENTRY2_1(), transformationMatrix4x4.getENTRY3_1()},

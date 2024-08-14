@@ -1,16 +1,31 @@
-import java.nio.*;
-import javax.swing.*;
-import static com.jogamp.opengl.GL4.*;
-import com.jogamp.opengl.*;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.common.nio.Buffers;
-import com.jogamp.opengl.glu.GLU;//checkOpenGLError; printShaderLog; printProgramLog;
+import static com.jogamp.opengl.GL.GL_ARRAY_BUFFER;
+import static com.jogamp.opengl.GL.GL_DEPTH_BUFFER_BIT;
+import static com.jogamp.opengl.GL.GL_DEPTH_TEST;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_LEQUAL;
+import static com.jogamp.opengl.GL.GL_NO_ERROR;
+import static com.jogamp.opengl.GL.GL_STATIC_DRAW;
+import static com.jogamp.opengl.GL.GL_TRIANGLES;
+import static com.jogamp.opengl.GL2ES2.GL_FRAGMENT_SHADER;
+import static com.jogamp.opengl.GL2ES2.GL_INFO_LOG_LENGTH;
+import static com.jogamp.opengl.GL2ES2.GL_VERTEX_SHADER;
+import static com.jogamp.opengl.GL2ES3.GL_COLOR;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.util.Scanner;
 import java.util.Vector;
-import com.jogamp.opengl.util.*;
-// TODO import TransformationMatrix4x4;
+
+import javax.swing.JFrame;
+
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;//checkOpenGLError; printShaderLog; printProgramLog;
 
 
 

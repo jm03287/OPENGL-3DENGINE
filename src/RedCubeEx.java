@@ -1,20 +1,32 @@
-import java.nio.*;
-import javax.swing.*;
-import static com.jogamp.opengl.GL4.*;
-import com.jogamp.opengl.*;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.common.nio.Buffers;
-import com.jogamp.opengl.glu.GLU;//checkOpenGLError; printShaderLog; printProgramLog;
+import static com.jogamp.opengl.GL.GL_ARRAY_BUFFER;
+import static com.jogamp.opengl.GL.GL_DEPTH_BUFFER_BIT;
+import static com.jogamp.opengl.GL.GL_DEPTH_TEST;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_LEQUAL;
+import static com.jogamp.opengl.GL.GL_NO_ERROR;
+import static com.jogamp.opengl.GL.GL_STATIC_DRAW;
+import static com.jogamp.opengl.GL.GL_TRIANGLES;
+import static com.jogamp.opengl.GL2ES2.GL_FRAGMENT_SHADER;
+import static com.jogamp.opengl.GL2ES2.GL_INFO_LOG_LENGTH;
+import static com.jogamp.opengl.GL2ES2.GL_VERTEX_SHADER;
+
 import java.io.File;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.util.Scanner;
 import java.util.Vector;
-import com.jogamp.opengl.util.*;
-import graphicslib3D.*;
-import graphicslib3D.GLSLUtils.*;
-import java.lang.Object;
-//import org.joml.jmh.Matrix4f;
-// TODO import TransformationMatrix4x4;
+
+import javax.swing.JFrame;
+
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.glu.GLU;//checkOpenGLError; printShaderLog; printProgramLog;
+
+import graphicslib3D.GLSLUtils;
 
 
 
@@ -28,7 +40,9 @@ public class RedCubeEx extends JFrame implements GLEventListener{
 	//whereas such the projection matrix expresses a uniform shader algorithm of view-to-camera
 	private float cameraX, cameraY, cameraZ;
 	private float cubeLocX, cubeLocY, cubeLocZ;
-	private TransformationMatrix4x4f pMat;
+	private GLSLUtils util = new GLSLUtils();
+	private Matrix3d pMat;
+	//private TransformationMatrix4x4f pMat;
 	
 	public RedCubeEx() {
 		setTitle("RedCubeEx");
@@ -61,14 +75,14 @@ public class RedCubeEx extends JFrame implements GLEventListener{
 		int proj_loc = gl.glGetUniformLocation(rendering_program, "proj_matrix"); //obtain pointer to projection matrix uniform shader's reference
 		//TransformationMatrix4x4f.mat4GLSL(pMat)
 		//TransformationMatrix4x4f.mat4GLSL(mvMat)
-		float[] mat4_like_PMat = TransformationMatrix4x4f.mat4GLSL(TransformationMatrix4x4f.transposeMatrix4x4(pMat));
+		//float[] mat4_like_PMat = TransformationMatrix4x4f.mat4GLSL(TransformationMatrix4x4f.transposeMatrix4x4(pMat));
 		/*Matrix4f JOML_PMat = new Matrix4f(mat4_like_PMat[0], mat4_like_PMat[1], mat4_like_PMat[2], mat4_like_PMat[3],
 				mat4_like_PMat[4], mat4_like_PMat[5], mat4_like_PMat[6], mat4_like_PMat[7],
 				mat4_like_PMat[8], mat4_like_PMat[9], mat4_like_PMat[10], mat4_like_PMat[11],
 				mat4_like_PMat[12], mat4_like_PMat[13], mat4_like_PMat[14], mat4_like_PMat[15]);*/
 		//transfer uniform variables to corresponding shader reference to be used with vertex attributes from each vertex buffer, convert to mat4 format
 		gl.glUniformMatrix4fv(mv_loc, 1, false, TransformationMatrix4x4f.mat4GLSL(mvMat), 0);
-		gl.glUniformMatrix4fv(proj_loc, 1, false, TransformationMatrix4x4f.mat4GLSL(pMat), 0);
+		gl.glUniformMatrix4fv(proj_loc, 1, false, pMat.getFloatValues(), 0);
 		
 		//activate and link vertex buffer object with shader's vertex attributes using VBO reference
 		gl.glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);

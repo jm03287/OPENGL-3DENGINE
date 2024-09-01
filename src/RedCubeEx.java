@@ -82,7 +82,7 @@ public class RedCubeEx extends JFrame implements GLEventListener{
 				mat4_like_PMat[12], mat4_like_PMat[13], mat4_like_PMat[14], mat4_like_PMat[15]);*/
 		//transfer uniform variables to corresponding shader reference to be used with vertex attributes from each vertex buffer, convert to mat4 format
 		gl.glUniformMatrix4fv(mv_loc, 1, false, TransformationMatrix4x4f.mat4GLSL(mvMat), 0);
-		gl.glUniformMatrix4fv(proj_loc, 1, false, pMat.getFloatValues(), 0);
+		gl.glUniformMatrix4fv(proj_loc, 1, false, TransformationMatrix4x4f.mat4GLSL(pMat), 0);
 		
 		//activate and link vertex buffer object with shader's vertex attributes using VBO reference
 		gl.glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);

@@ -58,7 +58,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		GL4 gl = (GL4) GLContext.getCurrentGL();
 		float bkg[] = {0.0f, 0.0f, 0.0f, 1.0f}; //clear background after every frame
 		FloatBuffer bkgBuffer = Buffers.newDirectFloatBuffer(bkg);
-		gl.glClearBufferfv(GL_COLOR, 0, bkgBuffer);
+		gl.glClearBufferfv(GL_COLOR, 1, bkgBuffer);
 		gl.glClear(GL_DEPTH_BUFFER_BIT);
 		gl.glUseProgram(rendering_program);
 		
@@ -84,7 +84,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		gl.glEnableVertexAttribArray(0);
 		
 		//OpenGL preset adjustments
-		gl.glPointSize(1.0f);
+		gl.glPointSize(0.1f);
 		gl.glEnable(GL_DEPTH_TEST);
 		gl.glDepthFunc(GL_LEQUAL);
 		gl.glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -124,7 +124,7 @@ public class p2_1Ex extends JFrame implements GLEventListener{
 		setupVertices();
 		cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
 		cubeLocX = 0.0f; cubeLocY = -2.0f; cubeLocZ = 0.0f;
-		gl.glPointSize(1.0f);
+
 		float aspect = myCanvas.getWidth() / myCanvas.getHeight();
 		//float aspect = (float) myCanvas.getWidth() / (float) myCanvas.getHeight();
 		pMat = TransformationMatrix4x4f.projectionMatrix4x4(60.0f, aspect, 0.1f, 1000.0f); //set up view projection matrix

@@ -17,7 +17,7 @@ public class TransformationMatrix4x4 {
 	private final double ENTRY3_2;
 	private final double ENTRY3_3;
 	
-	public TransformationMatrix4x4(double[][] entries) {
+	public TransformationMatrix4x4(double[][] entries) { //Adam constructor
 		this.ENTRY0_0 = entries[0][0];
 		this.ENTRY0_1 = entries[0][1];
 		this.ENTRY0_2 = entries[0][2];
@@ -189,7 +189,7 @@ public class TransformationMatrix4x4 {
 				(float) transformationMatrix4x4.getENTRY0_3(), (float) transformationMatrix4x4.getENTRY1_3(), (float) transformationMatrix4x4.getENTRY2_3(), (float) transformationMatrix4x4.getENTRY3_3()};
 	}
 	
-	public TransformationMatrix4x4() { //NULL constructor
+	public TransformationMatrix4x4() { //NULL constructor for identity Matrix
 		this.ENTRY0_0 = 1.0;
 		this.ENTRY0_1 = 0.0;
 		this.ENTRY0_2 = 0.0;
@@ -211,7 +211,7 @@ public class TransformationMatrix4x4 {
 	//TRANSPOSED INVERSE/ INVERTED TRANSPOSE
 
 	public double getENTRY0_0() {
-		return ENTRY0_0;
+		return ENTRY0_0; 
 	}
 
 	public double getENTRY0_1() {
